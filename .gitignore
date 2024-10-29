@@ -1,0 +1,10 @@
+# 忽略所有图片文件
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.tif
+*.svg
+*.webp
