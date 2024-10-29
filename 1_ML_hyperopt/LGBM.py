@@ -1,7 +1,7 @@
 import numpy as np
 from hyperopt import fmin, tpe, hp, Trials, STATUS_OK
 from hyperopt.pyll import scope
-from sklearn.ensemble import GradientBoostingRegressor
+from lightgbm import LGBMRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_percentage_error
 from sklearn.preprocessing import StandardScaler
@@ -28,21 +28,22 @@ X_train_scaled = pd.DataFrame(X_train_scaled, columns=X.columns)
 X_test_scaled = scaler.transform(X_test)
 X_test_scaled = pd.DataFrame(X_test_scaled, columns=X.columns)
 
-# 定义参数空间 (GBR)
-gbr_space = {
-    'n_estimators': scope.int(hp.quniform('n_estimators', 50, 300, 10)),
+lgbm_space = {
+    'num_leaves': scope.int(hp.quniform('num_leaves', 20, 200, 1)),
     'max_depth': scope.int(hp.quniform('max_depth', 3, 30, 1)),
-    'min_samples_split': scope.int(hp.quniform('min_samples_split', 2, 20, 1)),
-    'min_samples_leaf': scope.int(hp.quniform('min_samples_leaf', 1, 20, 1)),
-    'learning_rate': hp.quniform('learning_rate', 0.1, 0.3, 0.01),
-    'subsample': hp.quniform('subsample', 0.1, 1, 0.01),
-    'max_features': hp.quniform('max_features', 0.1, 1, 0.01),
+    'learning_rate': hp.quniform('learning_rate', 0.01, 0.3, 0.01),
+    'n_estimators': scope.int(hp.quniform('n_estimators', 50, 300, 10)),
+    'min_child_samples': scope.int(hp.quniform('min_child_samples', 1, 20, 1)),
+    'subsample': hp.quniform('subsample', 0.5, 1.0, 0.05),
+    'colsample_bytree': hp.quniform('colsample_bytree', 0.5, 1.0, 0.05),
+    'reg_alpha': hp.quniform('reg_alpha', 0.1, 1, 0.01),
+    'reg_lambda': hp.quniform('reg_lambda', 0.1, 1, 0.01),
+    'extra_trees': hp.choice('extra_trees', [True, False])  # 增加额外的随机分裂尝试
 }
 
 
-# 定义目标函数
-def objective_gbr(params):
-    model = GradientBoostingRegressor(**params, random_state=21)
+def objective_lgbm(params):
+    model = LGBMRegressor(**params, random_state=21)
     model.fit(X_train_scaled, y_train)
     y_pred = model.predict(X_test_scaled)
     mape = mean_absolute_percentage_error(y_test, y_pred)
@@ -68,5 +69,4 @@ def hyperopt_search(space, objective, file_name):
 
     print("Best hyperparameters:", best)
 
-# 搜索 GB, XGB, LGBM 超参数
-hyperopt_search(gbr_space, objective_gbr, 'GBR_best_hyperparameters.json')
+hyperopt_search(lgbm_space, objective_lgbm, 'LGBM_best_hyperparameters.json')
