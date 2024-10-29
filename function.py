@@ -2,6 +2,9 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn.metrics import r2_score, mean_absolute_error, mean_absolute_percentage_error, root_mean_squared_error
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
 
 def calculate_metrics(y_true, y_pred):
     """
@@ -84,3 +87,21 @@ def plot_actual_vs_predicted(y_train, y_pred_train, y_test, y_pred_test, figtitl
     # 保存图像，背景透明，紧凑布局
     plt.savefig(figpath, bbox_inches='tight', transparent=True)
     plt.show()
+
+
+def split_data(data):
+    data['target_class'] = pd.qcut(data['Cs'], q=10, labels=False)
+    X = data.drop(['Cs', 'target_class'], axis=1)
+    y = data['Cs']
+    stratify_column = data['target_class']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=21, stratify=stratify_column)
+
+    scaler = StandardScaler()
+    scaler.fit(X_train)
+    X_train_scaled = scaler.transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+
+    X_train_scaled = pd.DataFrame(X_train_scaled, columns=X.columns)
+    X_test_scaled = pd.DataFrame(X_test_scaled, columns=X.columns)
+    return X_train_scaled, X_test_scaled, y_train, y_test

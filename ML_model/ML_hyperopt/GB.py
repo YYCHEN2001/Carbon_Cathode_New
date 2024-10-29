@@ -1,7 +1,7 @@
 import numpy as np
 from hyperopt import fmin, tpe, hp, Trials, STATUS_OK
 from hyperopt.pyll import scope
-from xgboost import XGBRegressor
+from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_percentage_error
 from sklearn.preprocessing import StandardScaler
@@ -9,7 +9,7 @@ import pandas as pd
 import json
 
 # 读取数据
-data = pd.read_csv("../data/dataset.csv")
+data = pd.read_csv("../../data/dataset.csv")
 
 # 数据分割
 data['target_class'] = pd.qcut(data['Cs'], q=10, labels=False)
@@ -28,26 +28,26 @@ X_train_scaled = pd.DataFrame(X_train_scaled, columns=X.columns)
 X_test_scaled = scaler.transform(X_test)
 X_test_scaled = pd.DataFrame(X_test_scaled, columns=X.columns)
 
-# 定义参数空间 (XGB)
-xgb_space = {
+# 定义参数空间 (GBR)
+gbr_space = {
     'n_estimators': scope.int(hp.quniform('n_estimators', 50, 300, 10)),
     'max_depth': scope.int(hp.quniform('max_depth', 3, 30, 1)),
-    'learning_rate': hp.quniform('learning_rate', 0.01, 0.3, 0.01),
+    'min_samples_split': scope.int(hp.quniform('min_samples_split', 2, 20, 1)),
+    'min_samples_leaf': scope.int(hp.quniform('min_samples_leaf', 1, 20, 1)),
+    'learning_rate': hp.quniform('learning_rate', 0.1, 0.3, 0.01),
     'subsample': hp.quniform('subsample', 0.1, 1, 0.01),
-    'colsample_bytree': hp.quniform('colsample_bytree', 0.5, 1, 0.1),
-    'colsample_bylevel': hp.quniform('colsample_bylevel', 0.5, 1, 0.1),
-    'colsample_bynode': hp.quniform('colsample_bynode', 0.5, 1, 0.1),
-    'reg_alpha': hp.quniform('reg_alpha', 0, 1, 0.1),
-    'gamma': hp.quniform('gamma', 0.1, 1, 0.1),
-    'min_child_weight': scope.int(hp.quniform('min_child_weight', 1, 10, 1)),
+    'max_features': hp.quniform('max_features', 0.1, 1, 0.01),
 }
 
-def objective_xgb(params):
-    model = XGBRegressor(**params, random_state=21, n_jobs=-1)
+
+# 定义目标函数
+def objective_gbr(params):
+    model = GradientBoostingRegressor(**params, random_state=21)
     model.fit(X_train_scaled, y_train)
     y_pred = model.predict(X_test_scaled)
     mape = mean_absolute_percentage_error(y_test, y_pred)
     return {'loss': mape, 'status': STATUS_OK}
+
 
 def hyperopt_search(space, objective, file_name):
     trials = Trials()
@@ -68,4 +68,5 @@ def hyperopt_search(space, objective, file_name):
 
     print("Best hyperparameters:", best)
 
-hyperopt_search(xgb_space, objective_xgb, 'XGB_best_hyperparameters.json')
+# 搜索 GB, XGB, LGBM 超参数
+hyperopt_search(gbr_space, objective_gbr, 'GBR_best_hyperparameters.json')
