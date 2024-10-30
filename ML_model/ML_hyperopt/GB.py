@@ -4,7 +4,6 @@ from hyperopt.pyll import scope
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_percentage_error
-from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import json
 
@@ -19,22 +18,13 @@ stratify_column = data['target_class']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=21, stratify=stratify_column)
 
-scaler = StandardScaler()
-scaler.fit(X_train)
-
-X_train_scaled = scaler.transform(X_train)
-X_train_scaled = pd.DataFrame(X_train_scaled, columns=X.columns)
-
-X_test_scaled = scaler.transform(X_test)
-X_test_scaled = pd.DataFrame(X_test_scaled, columns=X.columns)
-
 # 定义参数空间 (GBR)
 gbr_space = {
-    'n_estimators': scope.int(hp.quniform('n_estimators', 50, 300, 10)),
-    'max_depth': scope.int(hp.quniform('max_depth', 3, 30, 1)),
+    'n_estimators': scope.int(hp.quniform('n_estimators', 50, 1050, 50)),
+    'max_depth': scope.int(hp.quniform('max_depth', 3, 50, 1)),
     'min_samples_split': scope.int(hp.quniform('min_samples_split', 2, 20, 1)),
     'min_samples_leaf': scope.int(hp.quniform('min_samples_leaf', 1, 20, 1)),
-    'learning_rate': hp.quniform('learning_rate', 0.1, 0.3, 0.01),
+    'learning_rate': hp.quniform('learning_rate', 0.01, 0.3, 0.01),
     'subsample': hp.quniform('subsample', 0.1, 1, 0.01),
     'max_features': hp.quniform('max_features', 0.1, 1, 0.01),
 }
@@ -43,8 +33,8 @@ gbr_space = {
 # 定义目标函数
 def objective_gbr(params):
     model = GradientBoostingRegressor(**params, random_state=21)
-    model.fit(X_train_scaled, y_train)
-    y_pred = model.predict(X_test_scaled)
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
     mape = mean_absolute_percentage_error(y_test, y_pred)
     return {'loss': mape, 'status': STATUS_OK}
 
@@ -55,7 +45,7 @@ def hyperopt_search(space, objective, file_name):
         fn=objective,
         space=space,
         algo=tpe.suggest,
-        max_evals=200,
+        max_evals=500,
         trials=trials
     )
     # 转换为标准 Python 类型

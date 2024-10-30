@@ -6,33 +6,33 @@ from function import (split_data)
 
 # 读取数据
 data = pd.read_csv("../data/dataset.csv")
-X_train_scaled, X_test_scaled, y_train, y_test = split_data(data)
+X_train, X_test, y_train, y_test = split_data(data)
 
 from lightgbm import LGBMRegressor
 
 # 训练LightGBM回归模型
 lgbm = LGBMRegressor(
-    colsample_bytree=0.5,
-    learning_rate=0.12,
-    max_depth=25,
-    min_child_samples=12,
-    n_estimators=240,
-    num_leaves=95,
-    reg_alpha=0.13,
-    reg_lambda=0.23,
-    subsample=0.95,
+    colsample_bytree=0.25,
+    learning_rate=0.05,
+    max_depth=17,
+    min_child_samples=11,
+    n_estimators=900,
+    num_leaves=139,
+    reg_alpha=0.36,
+    reg_lambda=0.2,
+    subsample=0.6,
     random_state=21
 )
 
-lgbm.fit(X_train_scaled, y_train)
+lgbm.fit(X_train, y_train)
 
-y_train_pred = lgbm.predict(X_train_scaled)
-y_test_pred = lgbm.predict(X_test_scaled)
+y_train_pred = lgbm.predict(X_train)
+y_test_pred = lgbm.predict(X_test)
 
 explainer = shap.Explainer(lgbm)
-shap_values = explainer(X_train_scaled)
+shap_values = explainer(X_train)
 
-shap.summary_plot(shap_values, X_train_scaled, plot_type="bar", plot_size=(28, 12),
+shap.summary_plot(shap_values, X_train, plot_type="bar", plot_size=(28, 12),
                   # max_display=9,
                   show=False)
 # 获取当前图形对象
@@ -63,7 +63,7 @@ plt.savefig('lgbm_shap_train_summary_bar.png', bbox_inches='tight', pad_inches=0
 # 清除当前图形
 plt.clf()
 
-shap.summary_plot(shap_values, X_train_scaled, plot_size=(28, 12),
+shap.summary_plot(shap_values, X_train, plot_size=(28, 12),
                   # max_display=10,
                   show=False)
 # 获取当前图形对象

@@ -6,31 +6,31 @@ from function import (split_data)
 
 # 读取数据
 data = pd.read_csv("../data/dataset.csv")
-X_train_scaled, X_test_scaled, y_train, y_test = split_data(data)
+X_train, X_test, y_train, y_test = split_data(data)
 
 from xgboost import XGBRegressor
 
 # 训练XGBoost回归模型
-xgb = XGBRegressor(n_estimators=240,
-                   learning_rate=0.1,
-                   subsample=0.66,
-                   gamma=1,
-                   max_depth=22,
-                   min_child_weight=3,
-                   reg_alpha=1,
-                   colsample_bytree=0.6,
-                   colsample_bylevel=0.6,
+xgb = XGBRegressor(n_estimators=800,
+                   learning_rate=0.04,
+                   subsample=0.49,
+                   gamma=0.6,
+                   max_depth=14,
+                   min_child_weight=6,
+                   reg_alpha=0.5,
+                   colsample_bytree=0.8,
+                   colsample_bylevel=0.8,
                    colsample_bynode=0.6,
                    random_state=21)
-xgb.fit(X_train_scaled, y_train)
+xgb.fit(X_train, y_train)
 
-y_train_pred = xgb.predict(X_train_scaled)
-y_test_pred = xgb.predict(X_test_scaled)
+y_train_pred = xgb.predict(X_train)
+y_test_pred = xgb.predict(X_test)
 
 explainer = shap.Explainer(xgb)
-shap_values = explainer(X_train_scaled)
+shap_values = explainer(X_train)
 
-shap.summary_plot(shap_values, X_train_scaled, plot_type="bar", plot_size=(28, 12),
+shap.summary_plot(shap_values, X_train, plot_type="bar", plot_size=(28, 12),
                   # max_display=9,
                   show=False)
 # 获取当前图形对象
@@ -61,7 +61,7 @@ plt.savefig('xgb_shap_train_summary_bar.png', bbox_inches='tight', pad_inches=0.
 # 清除当前图形
 plt.clf()
 
-shap.summary_plot(shap_values, X_train_scaled, plot_size=(28, 12),
+shap.summary_plot(shap_values, X_train, plot_size=(28, 12),
                   # max_display=10,
                   show=False)
 # 获取当前图形对象

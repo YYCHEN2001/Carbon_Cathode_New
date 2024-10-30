@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+from sklearn.inspection import PartialDependenceDisplay
 from sklearn.metrics import r2_score, mean_absolute_error, mean_absolute_percentage_error, root_mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -96,12 +97,20 @@ def split_data(data):
     stratify_column = data['target_class']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=21, stratify=stratify_column)
+    return X_train, X_test, y_train, y_test
 
-    scaler = StandardScaler()
-    scaler.fit(X_train)
-    X_train_scaled = scaler.transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+def show_partial_denpendence(model, X_train, feature_name):
+    try:
+        # 使用 PartialDependenceDisplay 绘制部分依赖图
+        fig, ax = plt.subplots(figsize=(6, 4))
+        PartialDependenceDisplay.from_estimator(model, X_train, [feature_name], ax=ax, grid_resolution=100)
+        plt.tight_layout()
 
-    X_train_scaled = pd.DataFrame(X_train_scaled, columns=X.columns)
-    X_test_scaled = pd.DataFrame(X_test_scaled, columns=X.columns)
-    return X_train_scaled, X_test_scaled, y_train, y_test
+        # 保存图像到当前目录下
+        model_name = type(model).__name__
+        filename = f'{model_name}_partial_dependence_{feature_name}.png'
+        plt.savefig(filename, format='png', dpi=300)
+        plt.show()
+
+    except Exception as e:
+        print(f"Could not plot partial dependence for feature {feature_name}: {e}")
