@@ -22,7 +22,7 @@ lgbm_space = {
     'num_leaves': scope.int(hp.quniform('num_leaves', 20, 200, 1)),
     'max_depth': scope.int(hp.quniform('max_depth', 3, 30, 1)),
     'learning_rate': hp.quniform('learning_rate', 0.01, 0.3, 0.01),
-    'n_estimators': scope.int(hp.quniform('n_estimators', 50, 1050, 50)),
+    'n_estimators': scope.int(hp.quniform('n_estimators', 50, 350, 10)),
     'min_child_samples': scope.int(hp.quniform('min_child_samples', 1, 20, 1)),
     'subsample': hp.quniform('subsample', 0.5, 1.0, 0.05),
     'colsample_bytree': hp.quniform('colsample_bytree', 0.1, 1.0, 0.05),

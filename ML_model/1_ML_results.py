@@ -60,14 +60,13 @@ plot_actual_vs_predicted(y_train, y_train_pred, y_test, y_test_pred, 'Random For
 from sklearn.ensemble import GradientBoostingRegressor
 
 # 训练梯度提升回归模型
-gbr = GradientBoostingRegressor(n_estimators=900,
-                                alpha=0.001,
-                                learning_rate=0.04,
-                                max_depth=46,
-                                max_features=0.39,
-                                min_samples_leaf=5,
-                                min_samples_split=12,
-                                subsample=0.33,
+gbr = GradientBoostingRegressor(n_estimators=300,
+                                learning_rate=0.06,
+                                max_depth=12,
+                                max_features=0.5,
+                                min_samples_leaf=8,
+                                min_samples_split=18,
+                                subsample=0.7,
                                 random_state=21)
 gbr.fit(X_train, y_train)
 
@@ -81,15 +80,15 @@ plot_actual_vs_predicted(y_train, y_train_pred, y_test, y_test_pred, 'Gradient B
 from xgboost import XGBRegressor
 
 # 训练XGBoost回归模型
-xgb = XGBRegressor(n_estimators=800,
-                   learning_rate=0.04,
-                   subsample=0.49,
-                   gamma=0.6,
-                   max_depth=14,
-                   min_child_weight=6,
+xgb = XGBRegressor(n_estimators=280,
+                   learning_rate=0.09,
+                   subsample=0.64,
+                   gamma=0.3,
+                   max_depth=18,
+                   min_child_weight=9,
                    reg_alpha=0.5,
                    colsample_bytree=0.8,
-                   colsample_bylevel=0.8,
+                   colsample_bylevel=0.6,
                    colsample_bynode=0.6,
                    random_state=21)
 xgb.fit(X_train, y_train)
@@ -105,14 +104,14 @@ from lightgbm import LGBMRegressor
 # 训练LightGBM回归模型
 lgbm = LGBMRegressor(
     colsample_bytree=0.25,
-    learning_rate=0.05,
-    max_depth=17,
-    min_child_samples=11,
-    n_estimators=900,
-    num_leaves=139,
-    reg_alpha=0.36,
-    reg_lambda=0.2,
-    subsample=0.6,
+    learning_rate=0.23,
+    max_depth=25,
+    min_child_samples=10,
+    n_estimators=300,
+    num_leaves=70,
+    reg_alpha=0.45,
+    reg_lambda=0.51,
+    subsample=0.75,
     random_state=21
 )
 

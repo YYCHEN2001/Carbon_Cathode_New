@@ -11,15 +11,15 @@ X_train, X_test, y_train, y_test = split_data(data)
 from xgboost import XGBRegressor
 
 # 训练XGBoost回归模型
-xgb = XGBRegressor(n_estimators=800,
-                   learning_rate=0.04,
-                   subsample=0.49,
-                   gamma=0.6,
-                   max_depth=14,
-                   min_child_weight=6,
+xgb = XGBRegressor(n_estimators=280,
+                   learning_rate=0.09,
+                   subsample=0.64,
+                   gamma=0.3,
+                   max_depth=18,
+                   min_child_weight=9,
                    reg_alpha=0.5,
                    colsample_bytree=0.8,
-                   colsample_bylevel=0.8,
+                   colsample_bylevel=0.6,
                    colsample_bynode=0.6,
                    random_state=21)
 xgb.fit(X_train, y_train)

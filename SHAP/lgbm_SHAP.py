@@ -13,14 +13,14 @@ from lightgbm import LGBMRegressor
 # 训练LightGBM回归模型
 lgbm = LGBMRegressor(
     colsample_bytree=0.25,
-    learning_rate=0.05,
-    max_depth=17,
-    min_child_samples=11,
-    n_estimators=900,
-    num_leaves=139,
-    reg_alpha=0.36,
-    reg_lambda=0.2,
-    subsample=0.6,
+    learning_rate=0.23,
+    max_depth=25,
+    min_child_samples=10,
+    n_estimators=300,
+    num_leaves=70,
+    reg_alpha=0.45,
+    reg_lambda=0.51,
+    subsample=0.75,
     random_state=21
 )
 

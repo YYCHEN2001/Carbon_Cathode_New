@@ -20,7 +20,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # 定义参数空间 (XGB)
 xgb_space = {
-    'n_estimators': scope.int(hp.quniform('n_estimators', 50, 1050, 50)),
+    'n_estimators': scope.int(hp.quniform('n_estimators', 50, 350, 10)),
     'max_depth': scope.int(hp.quniform('max_depth', 3, 30, 1)),
     'learning_rate': hp.quniform('learning_rate', 0.01, 0.3, 0.01),
     'subsample': hp.quniform('subsample', 0.1, 1, 0.01),
