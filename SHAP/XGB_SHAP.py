@@ -8,6 +8,8 @@ from function import (split_data)
 data = pd.read_csv("../data/dataset.csv")
 X_train, X_test, y_train, y_test = split_data(data)
 
+print(X_train)
+
 from xgboost import XGBRegressor
 
 # 训练XGBoost回归模型
@@ -30,7 +32,7 @@ y_test_pred = xgb.predict(X_test)
 explainer = shap.Explainer(xgb)
 shap_values = explainer(X_train)
 
-shap.summary_plot(shap_values, X_train, plot_type="bar", plot_size=(28, 12),
+shap.summary_plot(shap_values, X_train, plot_type="bar", plot_size=(20, 19),
                   # max_display=9,
                   show=False)
 # 获取当前图形对象
@@ -42,16 +44,16 @@ for ax in fig.axes:
     ax.title.set_fontweight('bold')  # 加粗标题字体
     ax.title.set_fontname('Times New Roman')  # 设置字体为 Times New Roman
 
-    ax.xaxis.label.set_size(32)  # 放大 x 轴标签字体
+    ax.xaxis.label.set_size(48)  # 放大 x 轴标签字体
     ax.xaxis.label.set_fontweight('bold')  # 加粗 x 轴标签字体
     ax.xaxis.label.set_fontname('Times New Roman')  # 设置字体为 Times New Roman
 
-    ax.yaxis.label.set_size(36)  # 放大 y 轴标签字体
+    ax.yaxis.label.set_size(48)  # 放大 y 轴标签字体
     ax.yaxis.label.set_fontweight('bold')  # 加粗 y 轴标签字体
     ax.yaxis.label.set_fontname('Times New Roman')  # 设置字体为 Times New Roman
 
     for label in (ax.get_xticklabels() + ax.get_yticklabels()):
-        label.set_fontsize(32)  # 放大刻度标签字体
+        label.set_fontsize(48)  # 放大刻度标签字体
         label.set_fontweight('bold')  # 加粗刻度标签字体
         label.set_fontname('Times New Roman')  # 设置字体为 Times New Roman
 
@@ -61,7 +63,7 @@ plt.savefig('xgb_shap_train_summary_bar.png', bbox_inches='tight', pad_inches=0.
 # 清除当前图形
 plt.clf()
 
-shap.summary_plot(shap_values, X_train, plot_size=(28, 12),
+shap.summary_plot(shap_values, X_train, plot_size=(20, 19),
                   # max_display=10,
                   show=False)
 # 获取当前图形对象
@@ -73,16 +75,16 @@ for ax in fig.axes:
     ax.title.set_fontweight('bold')  # 加粗标题字体
     ax.title.set_fontname('Times New Roman')  # 设置字体为 Times New Roman
 
-    ax.xaxis.label.set_size(32)  # 放大 x 轴标签字体
+    ax.xaxis.label.set_size(48)  # 放大 x 轴标签字体
     ax.xaxis.label.set_fontweight('bold')  # 加粗 x 轴标签字体
     ax.xaxis.label.set_fontname('Times New Roman')  # 设置字体为 Times New Roman
 
-    ax.yaxis.label.set_size(36)  # 放大 y 轴标签字体
+    ax.yaxis.label.set_size(48)  # 放大 y 轴标签字体
     ax.yaxis.label.set_fontweight('bold')  # 加粗 y 轴标签字体
     ax.yaxis.label.set_fontname('Times New Roman')  # 设置字体为 Times New Roman
 
     for label in (ax.get_xticklabels() + ax.get_yticklabels()):
-        label.set_fontsize(32)  # 放大刻度标签字体
+        label.set_fontsize(48)  # 放大刻度标签字体
         label.set_fontweight('bold')  # 加粗刻度标签字体
         label.set_fontname('Times New Roman')  # 设置字体为 Times New Roman
 plt.savefig('xgb_shap_train_summary.png', bbox_inches='tight', pad_inches=0.1, transparent=True, dpi=300)

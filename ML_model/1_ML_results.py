@@ -6,6 +6,7 @@ from function import metrics_to_dataframe, plot_actual_vs_predicted, split_data
 data = pd.read_csv("../data/dataset.csv")
 X_train, X_test, y_train, y_test = split_data(data)
 
+print(X_train)
 from sklearn.linear_model import LinearRegression
 
 # 训练线性回归模型

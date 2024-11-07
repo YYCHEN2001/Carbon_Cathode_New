@@ -73,3 +73,11 @@ plt.savefig('pearson_corr.png', dpi=300, bbox_inches='tight')
 
 # 显示图像
 plt.show()
+
+# 数据分布统计
+statistics = data.describe(include='all')
+statistics_transposed = statistics.transpose().round(2)
+
+# 将统计结果保存到 Markdown 文件
+with open('statistics.md', 'w') as f:
+    f.write(statistics_transposed.to_markdown())

@@ -4,8 +4,6 @@ from matplotlib import pyplot as plt
 from sklearn.inspection import PartialDependenceDisplay
 from sklearn.metrics import r2_score, mean_absolute_error, mean_absolute_percentage_error, root_mean_squared_error
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-
 
 def calculate_metrics(y_true, y_pred):
     """
@@ -37,7 +35,7 @@ def plot_actual_vs_predicted(y_train, y_pred_train, y_test, y_pred_test, figtitl
         'font.family': 'Times New Roman',
         'font.size': 32,
         'font.weight': 'bold',
-        'figure.figsize': (10, 10)  # 设置图像尺寸为10x10英寸
+        'figure.figsize': (12, 9)
     })
 
     # 绘制训练集和测试集的散点图
@@ -99,18 +97,63 @@ def split_data(data):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=21, stratify=stratify_column)
     return X_train, X_test, y_train, y_test
 
-def show_partial_denpendence(model, X_train, feature_name):
-    try:
-        # 使用 PartialDependenceDisplay 绘制部分依赖图
-        fig, ax = plt.subplots(figsize=(6, 4))
-        PartialDependenceDisplay.from_estimator(model, X_train, [feature_name], ax=ax, grid_resolution=100)
-        plt.tight_layout()
+def save_pdp(model, X_train, feature_name, savepath):
+    # 计算部分依赖数据
+    pdp_result = PartialDependenceDisplay.from_estimator(model, X_train, [feature_name], grid_resolution=100)
+    # 提取部分依赖数据
+    feature_values = pdp_result.lines_[0][0].get_xdata()  # X轴特征值
+    partial_dependence_values = pdp_result.lines_[0][0].get_ydata()  # Y轴部分依赖值
+    # 创建DataFrame并保存为CSV
+    pdp_data = pd.DataFrame({
+        'Feature Values': feature_values,
+        'Partial Dependence Values': partial_dependence_values
+    })
+    # 保存CSV到本地
+    pdp_data.to_csv(savepath, index=False)
 
-        # 保存图像到当前目录下
-        model_name = type(model).__name__
-        filename = f'{model_name}_partial_dependence_{feature_name}.png'
-        plt.savefig(filename, format='png', dpi=300)
+def save_2d_pdp(model, X_train, features, savepath):
+    # %%
+    # 计算部分依赖数据
+    # 检查特征是否在数据集中
+    print("Training data columns:", X_train.columns)
+    assert all([feature in X_train.columns for feature in features]), "One or more features not found in training data"
+
+    # 计算2D部分依赖数据
+    try:
+        fig, ax = plt.subplots(figsize=(12, 9))
+        pdp_display = PartialDependenceDisplay.from_estimator(model, X_train, [features], ax=ax, grid_resolution=50)
+
+        # 检查是否成功生成部分依赖数据
+        if len(pdp_display.pd_results) == 0:
+            raise ValueError("No partial dependence data was generated for the given features.")
+
+        # 提取网格值和部分依赖值
+        grid_values = pdp_display.pd_results[0].grid_values
+        x_values, y_values = grid_values
+        average_values = pdp_display.pd_results[0].average
+
+        # 创建网格值
+        X_mesh, Y_mesh = np.meshgrid(x_values, y_values)
+
+        # 将数据存储为DataFrame
+        pdp_2d_data = pd.DataFrame({
+            f'{features[0]}': X_mesh.flatten(),
+            f'{features[1]}': Y_mesh.flatten(),
+            'Partial Dependence': average_values.transpose().flatten()
+        })
+
+        # 保存为CSV文件
+        pdp_2d_data.to_csv(savepath, index=False)
+
+        # 显示保存路径
+        print("2D PDP 数据已保存到本地")
+
+        # 显示图形
+        plt.tight_layout()
         plt.show()
 
-    except Exception as e:
-        print(f"Could not plot partial dependence for feature {feature_name}: {e}")
+    except ValueError as e:
+        print(f"Error in generating partial dependence plot: {e}")
+
+    except IndexError as e:
+        print(f"IndexError: {e}. Please check if the features are correctly specified.")
