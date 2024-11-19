@@ -96,22 +96,11 @@ loss_function = MAPE_Loss()
 # loss_function = RMSE_Loss()  # 或者使用 MAPE_Loss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-# 训练模型
-num_epochs = 5000
-for epoch in range(num_epochs):
-    model.train()
-    running_loss = 0.0
-    for X_batch, y_batch in train_loader:
-        optimizer.zero_grad()
-        outputs = model(X_batch)
-        loss = loss_function(outputs, y_batch)
-        loss.backward()
-        optimizer.step()
-        running_loss += loss.item()
+# 重新定义模型结构
+model = ANN(input_dim)  # 使用相同的模型结构
 
-    # 每 10 个 epoch 打印一次平均损失
-    if (epoch + 1) % 10 == 0:
-        print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {running_loss / len(train_loader):.4f}")
+# 加载模型参数，确保使用 weights_only=True 来提高安全性
+model.load_state_dict(torch.load("ann_model.pth", weights_only=True))  # 加载模型参数
 
 # 评估模型
 model.eval()

@@ -9,6 +9,9 @@ import numpy as np
 from hyperopt import fmin, tpe, hp, Trials
 from hyperopt.pyll.base import scope
 
+# 检查是否有可用的 GPU
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
 
 # 自定义 MAPE 损失函数
 class MAPE_Loss(nn.Module):
@@ -43,28 +46,30 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 # 数据标准化
 scaler = StandardScaler()
 scaler.fit(X_train)
-
 X_train_scaled = scaler.transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# 将数据转换为 PyTorch 张量
-X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32)
-y_train_tensor = torch.tensor(y_train, dtype=torch.float32).view(-1, 1)
+# 将数据转换为 PyTorch 张量并移动到 GPU
+X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32).to(device)
+y_train_tensor = torch.tensor(y_train, dtype=torch.float32).view(-1, 1).to(device)
 
-X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32)
-y_test_tensor = torch.tensor(y_test, dtype=torch.float32).view(-1, 1)
+X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32).to(device)
+y_test_tensor = torch.tensor(y_test, dtype=torch.float32).view(-1, 1).to(device)
 
 # 创建 DataLoader
 train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
 test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
 
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+
 # 定义搜索空间
 space = {
-    'num_layers': scope.int(hp.quniform('num_layers', 1, 5, 1)),  # 隐藏层的层数范围为 1 到 5 层
+    'num_layers': scope.int(hp.quniform('num_layers', 3, 6, 1)),  # 隐藏层的层数范围为 1 到 5 层
     'hidden_units': hp.choice('hidden_units', [
-        [scope.int(hp.quniform(f'units_layer_{i}', 10, 120, 10)) for i in range(5)]
+        [scope.int(hp.quniform(f'units_layer_{i}', 10, 256, 2)) for i in range(6)]
     ]),
-    'learning_rate': hp.loguniform('learning_rate', -5, -2),
+    'learning_rate': hp.loguniform('learning_rate', -5, -1),
     'batch_size': scope.int(hp.quniform('batch_size', 16, 64, 16)),
 }
 
@@ -105,7 +110,7 @@ def objective(params):
     loss_function = RMSE_Loss()
 
     # 训练模型
-    num_epochs = 200  # 可适当调整以加快搜索
+    num_epochs = 1000  # 可适当调整以加快搜索
     for epoch in range(num_epochs):
         model.train()
         for X_batch, y_batch in train_loader:
