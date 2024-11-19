@@ -35,7 +35,7 @@ def plot_actual_vs_predicted(y_train, y_pred_train, y_test, y_pred_test, figtitl
         'font.family': 'Times New Roman',
         'font.size': 32,
         'font.weight': 'bold',
-        'figure.figsize': (12, 9)
+        'figure.figsize': (12, 12)
     })
 
     # 绘制训练集和测试集的散点图
