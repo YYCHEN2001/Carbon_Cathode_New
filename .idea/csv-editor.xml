@@ -17,6 +17,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\SHAP\feature_importance.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\data\dataset.csv">
           <value>
             <Attribute>
