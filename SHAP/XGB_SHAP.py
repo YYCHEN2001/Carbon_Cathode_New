@@ -32,9 +32,18 @@ y_test_pred = xgb.predict(X_test)
 explainer = shap.Explainer(xgb)
 shap_values = explainer(X_train)
 
-shap.summary_plot(shap_values, X_train, plot_type="bar", plot_size=(20, 19),
-                  # max_display=9,
-                  show=False)
+shap.summary_plot(shap_values, X_train, plot_type="bar", plot_size=(20, 19), show=False)
+
+# 获取特征重要性
+importance = xgb.feature_importances_
+
+# 使用 X_train 的列名称来代替特征名
+feature_names = X_train.columns  # 直接使用原始数据的列名
+importance_df = pd.DataFrame({'Feature': feature_names, 'Importance': importance})
+
+# 保存为 CSV 文件
+importance_df.to_csv('feature_importance.csv', index=False)
+
 # 获取当前图形对象
 fig = plt.gcf()
 
