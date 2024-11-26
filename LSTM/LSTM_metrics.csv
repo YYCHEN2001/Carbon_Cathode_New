@@ -1,2 +1,2 @@
 model,R2_train,MAE_train,MAPE_train,RMSE_train,R2_test,MAE_test,MAPE_test,RMSE_test
-LSTM,0.958,4.229,3.87,8.148,0.925,6.749,8.557,10.884
+LSTM,0.975,3.092,2.937,6.367,0.945,5.67,6.964,9.269
