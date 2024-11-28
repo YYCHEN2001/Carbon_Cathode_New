@@ -32,7 +32,7 @@ y_test_pred = xgb.predict(X_test)
 explainer = shap.Explainer(xgb)
 shap_values = explainer(X_train)
 
-shap.summary_plot(shap_values, X_train, plot_type="bar", plot_size=(20, 19), show=False)
+shap.summary_plot(shap_values, X_train, plot_type="bar", plot_size=(17, 15), show=False)
 
 # 获取特征重要性
 importance = xgb.feature_importances_
@@ -67,12 +67,12 @@ for ax in fig.axes:
         label.set_fontname('Times New Roman')  # 设置字体为 Times New Roman
 
 plt.savefig('xgb_shap_train_summary_bar.png', bbox_inches='tight', pad_inches=0.1, transparent=True,
-            dpi=300)
+            dpi=600)
 
 # 清除当前图形
 plt.clf()
 
-shap.summary_plot(shap_values, X_train, plot_size=(20, 19),
+shap.summary_plot(shap_values, X_train, plot_size=(17, 15),
                   # max_display=10,
                   show=False)
 # 获取当前图形对象
@@ -96,4 +96,4 @@ for ax in fig.axes:
         label.set_fontsize(48)  # 放大刻度标签字体
         label.set_fontweight('bold')  # 加粗刻度标签字体
         label.set_fontname('Times New Roman')  # 设置字体为 Times New Roman
-plt.savefig('xgb_shap_train_summary.png', bbox_inches='tight', pad_inches=0.1, transparent=True, dpi=300)
+plt.savefig('xgb_shap_train_summary.png', bbox_inches='tight', pad_inches=0.1, transparent=True, dpi=600)
