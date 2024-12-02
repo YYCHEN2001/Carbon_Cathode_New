@@ -88,10 +88,10 @@ def plot_actual_vs_predicted(y_train, y_pred_train, y_test, y_pred_test, figtitl
     plt.show()
 
 
-def split_data(data):
-    data['target_class'] = pd.qcut(data['Cs'], q=10, labels=False)
-    X = data.drop(['Cs', 'target_class'], axis=1)
-    y = data['Cs']
+def split_data(data, target):
+    data['target_class'] = pd.qcut(data[target], q=10, labels=False)
+    X = data.drop([target, 'target_class'], axis=1)
+    y = data[target]
     stratify_column = data['target_class']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=21, stratify=stratify_column)
