@@ -1,0 +1,6 @@
+model,R2_train,MAE_train,MAPE_train,RMSE_train,R2_test,MAE_test,MAPE_test,RMSE_test
+Linear Regression,0.422,22.901,34.682,30.511,0.547,19.912,37.043,27.923
+Support Vector Regression,0.852,10.862,14.657,15.414,0.869,11.108,17.472,15.031
+Random Forest,0.988,2.985,4.127,4.463,0.947,6.914,10.246,9.515
+XGBoost,0.997,1.437,1.938,2.206,0.982,4.07,6.244,5.508
+LightGBM,0.999,1.117,1.499,1.522,0.986,3.618,5.915,4.882

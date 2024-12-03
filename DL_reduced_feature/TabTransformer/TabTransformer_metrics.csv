@@ -1,0 +1,2 @@
+model,R2_train,MAE_train,MAPE_train,RMSE_train,R2_test,MAE_test,MAPE_test,RMSE_test
+TabTransformer,0.923,5.652,5.822,11.144,0.84,10.888,15.56,16.617
