@@ -1,2 +1,2 @@
 model,R2_train,MAE_train,MAPE_train,RMSE_train,R2_test,MAE_test,MAPE_test,RMSE_test
-GNN,0.986,2.903,3.365,4.82,0.935,6.431,9.185,10.575
+GNN,0.984,3.115,3.651,5.103,0.937,6.569,9.354,10.425

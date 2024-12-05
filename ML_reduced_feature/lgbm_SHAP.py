@@ -67,3 +67,17 @@ for ax in fig.axes:
         label.set_fontweight('bold')  # 加粗刻度标签字体
         label.set_fontname('Times New Roman')  # 设置字体为 Times New Roman
 plt.savefig('output/lgbm_shap_train_summary.png', bbox_inches='tight', pad_inches=0.1, transparent=False, dpi=600)
+
+# Get feature importance
+feature_importance = lgbm.feature_importances_
+feature_names = X_train.columns
+
+importance_df = pd.DataFrame({
+    'Feature': feature_names,
+    'Importance': feature_importance
+})
+# Sort by importance
+importance_df = importance_df.sort_values(by='Importance', ascending=False)
+
+# Save to CSV
+importance_df.to_csv('output/feature_importance.csv', index=False)
