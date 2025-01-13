@@ -14,7 +14,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
 # 载入数据集并预处理
-data = pd.read_csv("../../data/dataset.csv")
+data = pd.read_csv("../../data_old/dataset.csv")
 
 # 数据分割
 data['target_class'] = pd.qcut(data['Cs'], q=10, labels=False)

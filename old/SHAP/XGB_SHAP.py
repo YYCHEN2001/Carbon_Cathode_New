@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 from function import (split_data)
 
 # 读取数据
-data = pd.read_csv("../data/dataset.csv")
+data = pd.read_csv("../data_old/dataset.csv")
 X_train, X_test, y_train, y_test = split_data(data)
 
 print(X_train)

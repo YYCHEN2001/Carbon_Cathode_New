@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 # 读取数据
-data = pd.read_csv("dataset_reduced.csv")
+data = pd.read_csv("../../data/dataset_reduced.csv")
 data['target_class'] = pd.qcut(data['Cs'], q=10, labels=False)
 X = data.drop(['Cs', 'target_class'], axis=1)
 y = data['Cs']
