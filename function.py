@@ -84,7 +84,7 @@ def plot_actual_vs_predicted(y_train, y_pred_train, y_test, y_pred_test, figtitl
         spine.set_color('black')
 
     # 保存图像，背景透明，紧凑布局
-    plt.savefig(figpath, bbox_inches='tight', transparent=True)
+    plt.savefig(figpath, bbox_inches='tight', transparent=True, dpi=300)
     plt.show()
 
 
